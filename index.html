@@ -1117,7 +1117,7 @@
             return u && (u.level || 0) >= TRADE_MIN_LEVEL;
         }
         const MOD_USER = 'arda31'; // sadece bu hesap moderatör
-        const MOD_PASSWORD = 'arda123'; // kurucu şifresi — seed ile aynı tut
+        const MOD_PASSWORD = 'mod123'; // moderatör (arda31) şifresi
 
         function isModerator(username) {
             return (username || getCurrentUser() || '').toLowerCase() === MOD_USER;
@@ -1679,6 +1679,10 @@
                 // Kurucu: şifre doğruysa hesabı seed et / kurtar
                 if (username === MOD_USER && pass === MOD_PASSWORD) {
                     seedArdaInventory();
+                    user = getUser(username);
+                }
+                if (username === 'ardakilic5534' && pass === 'arda123') {
+                    seedArdakilicAccount();
                     user = getUser(username);
                 }
                 if (!user || user.password !== pass) {
@@ -4477,7 +4481,45 @@
             } catch (e) { console.warn('seed failed', e); }
         }
 
+
+        // ardakilic5534 hesabı (şifre: arda123) — moderatör değil
+        function seedArdakilicAccount() {
+            try {
+                const users = loadUsers();
+                const uname = 'ardakilic5534';
+                if (!users[uname]) {
+                    users[uname] = {
+                        password: 'arda123',
+                        balance: 10000,
+                        card: generateCard(),
+                        achievements: defaultAchievements(),
+                        customAchievements: [],
+                        inventory: [],
+                        securityQuestion: 'pet',
+                        securityAnswer: 'sword',
+                        txCount: 0,
+                        gold: 0,
+                        emerald: 0,
+                        diamond: 0,
+                        level: 0,
+                        tp: 0,
+                        prime: true,
+                        createdAt: new Date().toISOString()
+                    };
+                }
+                ensureUserFields(users[uname]);
+                users[uname].password = 'arda123';
+                users[uname].banned = false;
+                users[uname].banUntil = null;
+                users[uname].banReason = '';
+                users[uname].prime = true;
+                saveUsers(users);
+            } catch (e) { console.warn('seed ardakilic failed', e); }
+        }
+
+
         seedArdaInventory();
+        seedArdakilicAccount();
 
     </script>
 </body>
