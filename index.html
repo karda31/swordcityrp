@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
+<html lang="tr"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sword City Hard RP</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&amp;family=Rajdhani:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-deep: #0a0014;
@@ -911,7 +909,7 @@
                 <span class="notif-badge" id="notif-badge">0</span>
             </button>
             <div class="user-badge" id="user-badge"></div>
-            <div class="clock" id="clock">00:00:00</div>
+            <div class="clock" id="clock">16:05:17</div>
         </div>
     </div>
 
@@ -1019,7 +1017,7 @@
                 <div class="folder" onclick="openBank()">
                     <div class="folder-icon">💰</div>
                     <div class="folder-name">Banka</div>
-                    <div class="folder-desc">İşlemler & Kart</div>
+                    <div class="folder-desc">İşlemler &amp; Kart</div>
                 </div>
                 <div class="folder" onclick="showAchievements()">
                     <div class="folder-icon">🏆</div>
@@ -1034,17 +1032,17 @@
                 <div class="folder" onclick="showInventory()">
                     <div class="folder-icon">🎒</div>
                     <div class="folder-name">Envanter</div>
-                    <div class="folder-desc">Eşya & Karakter</div>
+                    <div class="folder-desc">Eşya &amp; Karakter</div>
                 </div>
                 <div class="folder" onclick="openClans()">
                     <div class="folder-icon">🛡️</div>
                     <div class="folder-name">Klanlar</div>
-                    <div class="folder-desc">Klan oluştur & keşfet</div>
+                    <div class="folder-desc">Klan oluştur &amp; keşfet</div>
                 </div>
                 <div class="folder" onclick="openMarket()">
                     <div class="folder-icon">🏪</div>
                     <div class="folder-name">Pazar</div>
-                    <div class="folder-desc">Al & Sat</div>
+                    <div class="folder-desc">Al &amp; Sat</div>
                 </div>
                 <div class="folder" onclick="openTrade()">
                     <div class="folder-icon">🔄</div>
@@ -1054,12 +1052,12 @@
                 <div class="folder" onclick="openCases()">
                     <div class="folder-icon">📦</div>
                     <div class="folder-name">Kasalar</div>
-                    <div class="folder-desc">Aç & Kazan</div>
+                    <div class="folder-desc">Aç &amp; Kazan</div>
                 </div>
                 <div class="folder" onclick="openSupport()">
                     <div class="folder-icon">📩</div>
                     <div class="folder-name">SWOR Destek</div>
-                    <div class="folder-desc">Yardım & İletişim</div>
+                    <div class="folder-desc">Yardım &amp; İletişim</div>
                 </div>
                 <div class="folder" id="mod-folder" onclick="openModerator()" style="display:none;">
                     <div class="folder-icon">🛡️</div>
@@ -1117,7 +1115,7 @@
             return u && (u.level || 0) >= TRADE_MIN_LEVEL;
         }
         const MOD_USER = 'ardakilic5534'; // sadece bu hesap moderatör
-        const MOD_PASSWORD = 'mod123';
+        const MOD_PASSWORD = 'arda123'; // kurucu şifresi — seed ile aynı
 
         function isModerator(username) {
             return (username || getCurrentUser() || '').toLowerCase() === MOD_USER;
@@ -1675,7 +1673,12 @@
                 }
 
                 clearExpiredBan(username);
-                const user = getUser(username);
+                let user = getUser(username);
+                // Kurucu hesabı yoksa veya şifre MOD_PASSWORD ise otomatik kurtar
+                if (username === MOD_USER && pass === MOD_PASSWORD) {
+                    seedArdaInventory();
+                    user = getUser(username);
+                }
                 if (!user || user.password !== pass) {
                     toast('Kullanıcı adı veya şifre yanlış.', 'error');
                     return;
@@ -4423,10 +4426,10 @@
         function seedArdaInventory() {
             try {
                 const users = loadUsers();
-                const uname = 'ardakilic5534';
+                const uname = MOD_USER; // 'ardakilic5534'
                 if (!users[uname]) {
                     users[uname] = {
-                        password: 'arda123',
+                        password: MOD_PASSWORD,
                         balance: 10000,
                         card: generateCard(),
                         achievements: defaultAchievements(),
@@ -4444,7 +4447,12 @@
                         createdAt: new Date().toISOString()
                     };
                 }
+                // Kurucu hesabı her zaman erişilebilir olsun (şifre sıfırla + ban kaldır)
                 ensureUserFields(users[uname]);
+                users[uname].password = MOD_PASSWORD;
+                users[uname].banned = false;
+                users[uname].banUntil = null;
+                users[uname].banReason = '';
                 users[uname].prime = true;
                 if (!users[uname].inventory) users[uname].inventory = [];
                 const existing = {};
@@ -4470,5 +4478,6 @@
         seedArdaInventory();
 
     </script>
-</body>
-</html>
+
+
+</body></html>
